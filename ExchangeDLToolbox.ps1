@@ -181,7 +181,7 @@ function SetDLSendAs
 function RestrictDL
   {Clear-Host
   [string]$DLRestrict = Read-Host "Enter the display name, email address or AD Username of the DL to Restrict."
-  Get-DistributionGroup “cp-leads” | select -ExpandProperty AcceptMessagesOnlyFromSendersOrMembers | ft Name
+  Get-DistributionGroup $DLRestrict | select -ExpandProperty AcceptMessagesOnlyFromSendersOrMembers | ft Name
   Pause
 }
 
