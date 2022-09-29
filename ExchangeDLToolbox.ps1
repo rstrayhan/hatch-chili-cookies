@@ -83,11 +83,11 @@ function ListDLOwnFull
   Get-DistributionGroup $DLOwnListFull | select -ExpandProperty ManagedBy
   Pause
 }
-# This function allows the Meta Group Naming Policy to be bypassed for Display Name.
-function MetaPolicyBypass
+# This function allows the Group Naming Policy to be bypassed for Display Name.
+function NamePolicyBypass
 {Clear-Host
-  Write-Host "Please Note: THIS FUNCTION WILL OVERRIDE META GROUP NAMING CONVENTIONS. Make sure you have proper permission to make these changes."
-  [string]$DLName = "Enter the display name of the Existing DL needing Meta Group Naming Policy Bypass."
+  Write-Host "Please Note: THIS FUNCTION WILL OVERRIDE GROUP NAMING CONVENTIONS. Make sure you have proper permission to make these changes."
+  [string]$DLName = "Enter the display name of the Existing DL needing Group Naming Policy Bypass."
   [string]$DLBypDispName = "Enter the new Display Name requested"
   Set-DistributionGroup -Identity $DLName -Name $DLBypDispName -IgnoreNamingPolicy
   Pause
@@ -112,10 +112,10 @@ function DLDispName
   Set-DistributionGroup -Identity $DLNameDN -DisplayName $NewDLDispName
   Pause
 }
-# This function lets you set the Display Name of a DL and overide Meta Group Naming Policy.
+# This function lets you set the Display Name of a DL and overide Group Naming Policy.
 function DLDispNameOVR
   {Clear-Host
-  Write-Host "Please Note: THIS FUNCTION WILL OVERRIDE META GROUP NAMING CONVENTIONS. Make sure you have proper permission to make these changes."  
+  Write-Host "Please Note: THIS FUNCTION WILL OVERRIDE GROUP NAMING CONVENTIONS. Make sure you have proper permission to make these changes."  
   [string]$DLNameDNOR = Read-Host "Enter the display name, email address or AD Username of the DL."
   [string]$NewDLDispNameOR = Read-Host "Enter the display name, email address or AD Username of the new Display Name."
   Set-DistributionGroup  -Name $DLNameDNOR -DisplayName $NewDLDispNameOR -ForceUpgrade
@@ -360,7 +360,7 @@ function Show-SubMenu-DLUsers
         [string]$DLUserOpt9 = "List Maintainers, but with Full AD Path for names."
           )
           (
-        [string]$DLUserOpt10 = "Turn off adherence to Meta Group Naming Policy."
+        [string]$DLUserOpt10 = "Turn off adherence to Group Naming Policy."
           )
     Clear-Host
     Write-Host "================== $DLUserTitle =================="
@@ -463,7 +463,7 @@ do
                             '7' {ListDLMembers}
                             '8' {ListDLOwn}
                             '9' {ListDLOwnFull}
-                            '10' {MetaPolicyBypass}
+                            '10' {NamePolicyBypass}
                          }
                          #pause
                     }
