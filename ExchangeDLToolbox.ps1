@@ -1,7 +1,7 @@
 ######################################################################################
 # Exchange DL Toolbox V1.3 - Released 9/9/2022                                       #
 #                                                                                    #
-# Script Created by Ryan Strayhan:                                                   #
+# Script Created by Ryan Strayhan                                                    #
 # Released Under MIT License                                                         # 
 ######################################################################################
 
@@ -198,22 +198,26 @@ function SetDLAccess
 # This function outputs the members of a DL in CSV format, up to 1,000 members
 function DLCSVMemList
 {Clear-Host
-  Write-Host "NOTE: The CSV file will be saved as C:\Distribution-List-Members.csv"
+  Write-Host "NOTE: The CSV file will be saved as C:\ "Your Folder Name" \Distribution-List-Members.csv"
+  [string]$FolderName = Read-Host "Enter the folder name you want to save the CSV file into. MUST BE UNIQUE>"
+  New-Item -Path "C:\$FolderName" -ItemType Directory
   [string]$DLMemListName = Read-Host "Enter the display name, email address or AD Username of the DL to access."
-  Get-DistributionGroupMember -Identity $DLMemListName | Select-Object Name, PrimarySMTPAddress | Export-CSV "C:\MET\$DLMemListName-Distribution-List-Members-$(get-date -f MM-dd-yyyy_hh.mm.ss).csv" -NoTypeInformation -Encoding UTF8
+  Get-DistributionGroupMember -Identity $DLMemListName | Select-Object Name, PrimarySMTPAddress | Export-CSV "C:\$FolderName\$DLMemListName-Distribution-List-Members-$(get-date -f MM-dd-yyyy_hh.mm.ss).csv" -NoTypeInformation -Encoding UTF8
   Pause
 }
 
 <# # This function outputs the members of a DL in CSV format, All members, over 1,000 members
 function DLCSV1KList
 {Clear-Host
-  Write-Host "NOTE: The CSV file will be saved as C:\Distribution-List-Members.csv"
-  [string]$DL1KListName = Read-Host "Export DL Members Names and Email Address to CSV File, saved in C:\, All Users (over 1000)."
-  Get-DistributionGroupMember -Identity $DL1KListName -ResultSize Unlimited | Select-Object Name, PrimarySMTPAddress | Export-CSV "C:\Distribution-List-Members.csv" -NoTypeInformation -Encoding UTF8
+  Write-Host " NOTE: The CSV file will be saved as C:\ "Your Folder Name" \Distribution-List-Members.csv"
+  [string]$FolderName = Read-Host " Enter the folder name you want to save the CSV file into. MUST BE UNIQUE."
+  New-Item -Path “C:\$FolderName” -ItemType Directory
+  [string]$DL1KListName = Read-Host "Enter the display name, email address or AD Username of the DL to access."
+  Get-DistributionGroupMember -Identity $DL1KListName -ResultSize Unlimited | Select-Object Name, PrimarySMTPAddress | Export-CSV "C:\$FolderName\$DLMemListName-Distribution-List-Members-$(get-date -f MM-dd-yyyy_hh.mm.ss).csv" -NoTypeInformation -Encoding UTF8
   Pause
 } #>
 
-# This function lists for a DL, the SAM Account Name, Organizational Unit, Organizational Unit Root, and OrganizationID
+# This function will output the DL's SAM Account Name, Organizational Unit, Organizational Unit Root, and OrganizationID
 function DLNameDetails
   {Clear-Host
   [string]$DLDetails = Read-Host "Enter the display name, email address or AD Username of the DL to list details for."
@@ -227,22 +231,14 @@ function DLNameDetails
 
 # For Future Usage
 
-# This function starts a session in Exchange Online to carry out the function for carrying out Powershell actions
-# function Show-Session-Global
-# { Clear-Host
-#   # Writes a message on screen to confirm that the login script to create a new session has started
-#   Write-Host "Running the requested script..." -ForegroundColor DarkBlue -BackgroundColor Gray
-#   # This sets the variable Session in the global scope and is the command that you would run before commands usually when you do something with Exchange in Powershell
-#   $global:Session =
-#     New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $global:UserCredential -Authentication "Basic" -AllowRedirection;
-#     # The below line then imports that session using the Variable we have just created to allow us to send the output of this function into the option we need
-#     # This is why the Menu Options contain these functions so this login part can be changed just here if this changes in future  
-#     Import-PSSession -Session $global:Session
-# }
-
-# This should enable a connection to Exchange Management Console (On-Prem) upon running the script.
+# This will connect to either the Exchange Management Console (On-Prem) or Exchange Online (off-prem) upon running the script.
 # Connect to Exchange Management Console (On-Prem)
+
 Enable-EMS
+
+# Connect to Exchange Online (off-prem)
+
+# Connect-ExchangeOnline
 
 #####################################################################
 # ---------- Functions for Menus and Submenus ----------
@@ -273,9 +269,6 @@ function Show-MainMenu-Toolbox
     Write-Host " 1: $MainOpt1"
     Write-Host " 2: $MainOpt2"
     Write-Host " 3: $MainOpt3"
-    #Write-Host " 4: $MainOpt4"
-    #Write-Host " 5: $MainOpt5"
-    #Write-Host " S: Turn On/Off Sounds"
     Write-Host ""
     Write-Host "=======Type 'Q' to Quit The Application========"
 }
@@ -305,14 +298,11 @@ function Show-SubMenu-DLAdmin
         [string]$DLAcctOpt6 = "Set the DL's SAM Account Name"
           )
           (
-        [string]$DLAcctOpt7 = "Set the DL's new Name (Internal), Display Name, and Alias. (Policy Override)"
+        [string]$DLAcctOpt7 = "Set the DL's new Name (Internal), Display Name, and Alias. (Group Naming Policy Override)"
           )
           (
         [string]$DLAcctOpt8 = "Set a new email for a DL. (Group Naming Policy Override)"
           )
-          <# (
-        [string]$DLAcctOpt9 = ""                           
-          ) #>
     Clear-Host
     Write-Host "================== $CalTitle =================="
     Write-Host ""
@@ -354,7 +344,7 @@ function Show-SubMenu-DLUsers
         [string]$DLUserOpt7 = "List all DL Members."
           )
           (
-        [string]$DLUserOpt8 = "List All DL Maintainers."
+        [string]$DLUserOpt8 = "List all DL Maintainers."
           )
           (
         [string]$DLUserOpt9 = "List Maintainers, but with Full AD Path for names."
@@ -388,7 +378,7 @@ function Show-SubMenu-DLUtils
         [string]$DLUtlOpt1 = "Sets 'Send As' permission for user or group."
           )
           (
-        [string]$DLUtlOpt2 = "Restrict DL so ony Users and accept message from Senders or Members."
+        [string]$DLUtlOpt2 = "Restrict DL so only Users and accept message from Senders or Members."
           )
           (
         [string]$DLUtlOpt3 = "Set how a user can join a DL. Three ways: Open, Closed, ApprovalRequired (no space)"
@@ -396,30 +386,9 @@ function Show-SubMenu-DLUtils
           (
         [string]$DLUtlOpt4 = "Export DL Members Names and Email Address to CSV File, saved in C:\, up to 1000"
           )
-          <# (
-        [string]$DLUtlOpt5 = "Export DL Members Names and Email Address to CSV File, saved in C:\, All Users (over 1000)"
-          ) #>
           (
         [string]$DLUtlOpt6 = "Lists for a DL, the SAM Account Name, Organizational Unit, Organizational Unit Root, and OrganizationIDs."
           )
-          <# (
-        [string]$FullOpt7 = "List all Users that have Delegate Permissions on a Calendar"
-          )
-          (
-        [string]$FullOpt8 = "Add a User to a Calendar"
-          )
-          (
-        [string]$FullOpt9 = "Remove a User from a Calendar"
-          )
-          (
-        [string]$FullOpt10 = "Change a User's Access Permissions to a Calendar"
-          )
-          (
-        [string]$FullOpt11 = "Remove an Individual User From Multiple Calendars"
-          )
-          (
-        [string]$FullOpt12 = "Update Your Saved Credentials"
-          ) #>
     Clear-Host
     Write-Host "================== $FullTitle ==================" 
     Write-Host ""
@@ -427,17 +396,14 @@ function Show-SubMenu-DLUtils
     Write-Host " 2: $DLUtlOpt2"
     Write-Host " 3: $DLUtlOpt3"
     Write-Host " 4: $DLUtlOpt4"
-    #Write-Host " 5: $DLUtlOpt5"
     Write-Host " 5: $DLUtlOpt6"
     Write-Host ""
 }
 # --------------------------------- END OF FUNCTION LIST -----------------------------------------------------
-#
-# Do Loop for Menu containing user switches and a nested looping system
-# This also calls the Menus with a changed positional paremeter switch so you can change these next to e.g. "-MainTitle" and "-MailTitle"
-# Use a new variable for each menu or it'll loop indefinitely or just have no menu e.g. $MainTile and $MailTitle
-# You can add as many options as you want to each layer and then branch out from there
-# Functions have been used so they can be called instead of code blocks in the User Switches for easier readibility and editing of the options later
+
+# Do Loop for Menu containing user switches and a nested looping system.
+# This also calls the Menus with a changed positional paremeter switch so you can change these next to e.g. "-DLUserTitle" and "-MainTitle"
+# Using a new variable for each menu so it doesn't try to call into other functions. Otherwise, it will loop indefinitely
 do
 {
     Clear-Host
