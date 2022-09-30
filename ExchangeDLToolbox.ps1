@@ -1,5 +1,5 @@
 ######################################################################################
-# Exchange DL Toolbox V1.3 - Released 9/9/2022                                       #
+# Exchange DL Toolbox V1.3 - Released 9/29/2022                                       #
 #                                                                                    #
 # Script Created by Ryan Strayhan                                                    #
 # Released Under MIT License                                                         # 
